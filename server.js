@@ -7,7 +7,7 @@ import passport from 'passport'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { setUserLocals } from './middlewares/setUserLocals.js'
-import { ensureGuest } from './middlewares/ensureGuest.js'
+// import { ensureGuest } from './middlewares/ensureGuest.js'
 import { apiLimiter } from './middlewares/rateLimiter.js';
 import './config/passport.js'
 import authRoutes from './routes/auth.js'
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(setUserLocals)
-app.use(ensureGuest)
+// app.use(ensureGuest)
 // Ограничаваме основните API пътища (примерно всички рутове под /api)
 app.use('/api/', apiLimiter)
 app.use('/auth/', apiLimiter)

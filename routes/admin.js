@@ -1,7 +1,6 @@
 import express from 'express'
-import { isAuthenticated, isAdmin } from '../middlewares/auth.js'
 import { listUsers, updateRole } from '../controllers/userController.js'
-import { ensureAuthenticated, authorizeRoles, ensureRole } from '../middlewares/auth.js'
+import { isAuthenticated, isAdmin, authorizeRoles, ensureRole } from '../middlewares/auth.js'
 import Log from '../models/Log.js'
 import { Parser as Json2csvParser } from 'json2csv';
 
@@ -14,7 +13,7 @@ router.get('/users', isAuthenticated, isAdmin, listUsers)
 router.post('/users/update-role', isAuthenticated, isAdmin, updateRole)
 
 // Само администратори и модератори могат да виждат логовете
-router.get('/logs', ensureAuthenticated, authorizeRoles('admin', 'moderator'), async (req, res) => {
+router.get('/logs', isAuthenticated, authorizeRoles('admin', 'moderator'), async (req, res) => {
   try {
     const logs = await Log.find().populate('user', 'email name').sort({ createdAt: -1 }).limit(100)
     res.json(logs)
@@ -24,7 +23,7 @@ router.get('/logs', ensureAuthenticated, authorizeRoles('admin', 'moderator'), a
 })
 
 // Middleware само за администратори
-router.use(ensureAuthenticated);
+router.use(isAuthenticated);
 router.use(ensureRole('Admin'));
 
 // GET /admin/logs/export?format=json|csv

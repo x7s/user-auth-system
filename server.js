@@ -7,7 +7,7 @@ import passport from 'passport'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { setUserLocals } from './middlewares/setUserLocals.js'
-// import { ensureGuest } from './middlewares/ensureGuest.js'
+import { isAuthenticated } from './middlewares/auth.js';
 import { apiLimiter } from './middlewares/rateLimiter.js';
 import './config/passport.js'
 import authRoutes from './routes/auth.js'
@@ -81,6 +81,21 @@ app.use('/api/logs', logsRoutes)
 app.use('/notifications', notificationsRouter)
 app.use('/activity', activityRoutes);
 app.use('/activity-logs', activityLogRoutes);
+
+// Рендирай началната страница (примерен frontend layout)
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Начало' });
+});
+
+// Форма за вход
+app.get('/login', (req, res) => {
+  res.render('login', { title: 'Вход' });
+});
+
+// Табло след вход (с данни от потребителя)
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.render('dashboard', { title: 'Табло', user: req.user });
+});
 
 // Старт
 const PORT = process.env.PORT || 3000

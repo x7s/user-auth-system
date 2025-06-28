@@ -1,11 +1,11 @@
 import express from 'express';
 import ActivityLog from '../models/ActivityLog.js';
-import { ensureAuthenticated, ensureRole } from '../middlewares/auth.js';
+import { isAuthenticated, ensureRole } from '../middlewares/auth.js';
 
 const router = express.Router();
 
 // Само модератори и админи могат да видят логовете
-router.get('/', ensureAuthenticated, ensureRole(['admin', 'moderator']), async (req, res) => {
+router.get('/', isAuthenticated, ensureRole(['admin', 'moderator']), async (req, res) => {
   const logs = await ActivityLog.find()
     .populate('user', 'username email')
     .sort({ createdAt: -1 })

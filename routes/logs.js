@@ -1,5 +1,5 @@
 import express from 'express'
-import { ensureAuthenticated, authorizeRoles } from '../middlewares/auth.js'
+import { isAuthenticated, authorizeRoles } from '../middlewares/auth.js'
 import { getAllLogs, getLogsByUser, getLogsByAction } from '../controllers/logsController.js'
 
 const router = express.Router()
@@ -7,7 +7,7 @@ const router = express.Router()
 // Всички логове (за админ/модератор)
 router.get(
   '/',
-  ensureAuthenticated,
+  isAuthenticated,
   authorizeRoles('admin', 'moderator'),
   getAllLogs
 )
@@ -15,7 +15,7 @@ router.get(
 // Логове по потребител
 router.get(
   '/user/:userId',
-  ensureAuthenticated,
+  isAuthenticated,
   authorizeRoles('admin', 'moderator'),
   getLogsByUser
 )
@@ -23,7 +23,7 @@ router.get(
 // Логове по действие
 router.get(
   '/action/:action',
-  ensureAuthenticated,
+  isAuthenticated,
   authorizeRoles('admin', 'moderator'),
   getLogsByAction
 )

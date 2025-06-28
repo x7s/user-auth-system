@@ -1,12 +1,12 @@
 import express from 'express';
-import { ensureAuth, ensureRole } from '../middlewares/auth.js'; // съществуващи middlewares
+import { isAuthenticated, ensureRole } from '../middlewares/auth.js'; // съществуващи middlewares
 import Log from '../models/Log.js'; // лог модел
 import { Parser } from 'json2csv';
 
 const router = express.Router();
 
 // Експорт в JSON
-router.get('/logs/export/json', ensureAuth, ensureRole(['admin', 'moderator']), async (req, res) => {
+router.get('/logs/export/json', isAuthenticated, ensureRole(['admin', 'moderator']), async (req, res) => {
   try {
     const logs = await Log.find().lean();
     res.setHeader('Content-Disposition', 'attachment; filename=logs.json');
@@ -19,7 +19,7 @@ router.get('/logs/export/json', ensureAuth, ensureRole(['admin', 'moderator']), 
 });
 
 // Експорт в CSV
-router.get('/logs/export/csv', ensureAuth, ensureRole(['admin', 'moderator']), async (req, res) => {
+router.get('/logs/export/csv', isAuthenticated, ensureRole(['admin', 'moderator']), async (req, res) => {
   try {
     const logs = await Log.find().lean();
     const fields = ['user', 'action', 'timestamp', 'details']; // съобрази с твоя модел

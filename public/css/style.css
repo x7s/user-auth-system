@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0d0d0d;
+  color: white;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: #121212;
+  padding: 1rem;
+}
+
+.sidebar h2 {
+  color: #00ffcc;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li a {
+  color: white;
+  display: block;
+  margin: 1rem 0;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 240px;
+  padding: 2rem;
+}
+
+.hero .gradient {
+  background: linear-gradient(to right, #00ffcc, #a100ff);
+  background-clip: text;             /* стандартна декларация */
+  -webkit-background-clip: text;     /* за WebKit браузъри */
+  -webkit-text-fill-color: transparent;
+}
+
+.card-grid {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+}

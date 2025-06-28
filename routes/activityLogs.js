@@ -1,10 +1,10 @@
 import express from 'express';
 import ActivityLog from '../models/ActivityLog.js';
-import { ensureAdminOrModerator } from '../middlewares/auth.js';
+import { ensureRoles } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.use(ensureAdminOrModerator);
+router.use(ensureRoles);
 
 // Връща всички логове с опции за филтриране: userId, action, дата
 router.get('/', async (req, res) => {

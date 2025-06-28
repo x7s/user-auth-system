@@ -1,6 +1,5 @@
 import express from 'express'
 import Log from '../models/Log.js';
-import { ensureAuthenticated } from '../middlewares/auth.js';
 import { isAuthenticated } from '../middlewares/auth.js'
 import { getProfile } from '../controllers/userController.js'
 
@@ -9,7 +8,7 @@ const router = express.Router()
 // Профил на текущия потребител
 router.get('/profile', isAuthenticated, getProfile)
 
-router.use(ensureAuthenticated);
+router.use(isAuthenticated);
 
 // GET /user/activity
 router.get('/activity', async (req, res) => {

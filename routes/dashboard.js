@@ -1,10 +1,10 @@
 import express from 'express'
-import { ensureAuthenticated, ensureRole, ensureRoles } from '../middlewares/auth.js'
+import { isAuthenticated, ensureRole, ensureRoles } from '../middlewares/auth.js'
 
 const router = express.Router()
 
 // Общ потребителски dashboard
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
+router.get('/dashboard', isAuthenticated, (req, res) => {
   res.send(`<h2>Добре дошъл, ${req.user.name}!</h2><p>Роля: ${req.user.role}</p>`)
 })
 

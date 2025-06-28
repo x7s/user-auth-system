@@ -1,12 +1,12 @@
 import express from 'express';
-import { ensureAuthenticated } from '../middlewares/auth.js';
+import { isAuthenticated } from '../middlewares/auth.js';
 import Notification from '../models/Notification.js';
 
 const router = express.Router();
-router.use(ensureAuthenticated);
+router.use(isAuthenticated);
 
 // Вземане на всички нотификации на текущия потребител, с опция за филтриране по прочетени/непрочетени
-router.get('/', ensureAuthenticated, async (req, res) => {
+router.get('/', isAuthenticated, async (req, res) => {
   try {
     const { read } = req.query; // опционален филтър: read=true/false
     const filter = { user: req.user._id };
@@ -25,7 +25,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 });
 
 // Маркиране на една нотификация като прочетена
-router.patch('/:id/read', ensureAuthenticated, async (req, res) => {
+router.patch('/:id/read', isAuthenticated, async (req, res) => {
   try {
     const notification = await Notification.findOne({
       _id: req.params.id,
@@ -44,7 +44,7 @@ router.patch('/:id/read', ensureAuthenticated, async (req, res) => {
 });
 
 // Маркиране на всички нотификации като прочетени
-router.patch('/read/all', ensureAuthenticated, async (req, res) => {
+router.patch('/read/all', isAuthenticated, async (req, res) => {
   try {
     await Notification.updateMany({ user: req.user._id, read: false }, { read: true });
     res.json({ success: true, message: 'All notifications marked as read' });

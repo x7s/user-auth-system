@@ -7,8 +7,9 @@ const router = express.Router()
 // Модераторски панел – преглед само
 router.get('/users', isAuthenticated, authorizeRoles('moderator'), listUsers)
 
-router.get('/panel', isAuthenticated, authorizeRoles('moderator'), (req, res) => {
-  res.send(`<h1>Moderator Panel</h1><p>Здравей, ${req.user.name}</p>`);
+// И модератори, и администратори имат достъп
+router.get('/moderator', isAuthenticated, authorizeRoles('moderator', 'admin'), (req, res) => {
+  res.send(`<h1>Moderator Panel</h1><p>Добре дошъл, ${req.user.name}</p>`);
 });
 
 export default router

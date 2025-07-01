@@ -1,7 +1,7 @@
 export function authorizeRoles(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Достъпът е отказан' });
+      return res.status(403).json({ error: 'Нямате достъп до тази страница.' });
     }
     next();
   };

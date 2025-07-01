@@ -5,8 +5,8 @@ const router = express.Router()
 
 // Общ потребителски dashboard
 router.get('/dashboard', isAuthenticated, (req, res) => {
-  res.send(`<h2>Добре дошъл, ${req.user.name}!</h2><p>Роля: ${req.user.role}</p>`)
-})
+  res.send(`<h1>Потребителски Dashboard</h1><p>Здравей, ${req.user.name}!</p><p>Роля: ${req.user.role}</p>`);
+});
 
 // Модераторски панел
 router.get('/moderator', ensureRoles(['admin', 'moderator']), (req, res) => {

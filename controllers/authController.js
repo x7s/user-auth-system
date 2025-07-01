@@ -48,20 +48,27 @@ export const loginUser = async (req, res, next) => {
       const twofaRequired = !!(twoFA && twoFA.enabled);
       req.session.twofaValidated = !twofaRequired;
 
-      if (!twofaRequired) {
-        await logLogin(user, req.ip);
-        await createLog({
-          user: user._id,
-          action: 'login',
-          details: `Потребител ${user.email} влезе.`,
-          ip: req.ip,
+      if (twofaRequired) {
+        return res.status(200).json({
+          message: 'Изисква се 2FA.',
+          twofaRequired: true,
         });
       }
 
-      res.status(200).json({
-        message: twofaRequired ? 'Изисква се 2FA.' : 'Успешен вход.',
-        twofaRequired,
+      // 🔐 2FA не се изисква → логни потребителя
+      await logLogin(user, req.ip);
+      await createLog({
+        user: user._id,
+        action: 'login',
+        details: `Потребител ${user.email} влезе.`,
+        ip: req.ip,
       });
+
+      // ✅ Пренасочване според роля
+      const role = user.role;
+      if (role === 'admin') return res.redirect('/admin');
+      if (role === 'moderator') return res.redirect('/moderator');
+      return res.redirect('/dashboard');
     });
   })(req, res, next);
 };

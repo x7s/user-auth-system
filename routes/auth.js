@@ -1,54 +1,26 @@
 import express from 'express';
 import passport from 'passport';
-import { verifyEmail } from '../controllers/authController.js';
+import { loginUser, registerUser, verifyEmail } from '../controllers/authController.js';
 
 const router = express.Router();
 
-// 🧑‍💻 Рендиране на login форма (по-късно ще добавим EJS или frontend)
+// 🔐 Login (GET)
 router.get('/login', (req, res) => {
-  res.send('<h2>Login Page</h2><p>Ще добавим EJS по-късно.</p>');
+  res.render('login', { title: 'Login', error: null });
 });
 
-// 🧑‍💼 Рендиране на регистрационна форма
+// 🔐 Login (POST)
+router.post('/login', loginUser);
+
+// 👤 Register (GET)
 router.get('/register', (req, res) => {
-  res.send('<h2>Register Page</h2><p>Ще добавим EJS по-късно.</p>');
+  res.render('register', { title: 'Register' });
 });
 
-// 📝 POST регистрация
-// ⚠️ Алтернативна логика, различна от тази в контролера
-// Може да я замениш с: import { registerUser } from '../controllers/authController.js'
-// и router.post('/register', registerUser)
-router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).send('Имейлът вече е зает.');
+// 👤 Register (POST)
+router.post('/register', registerUser);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role: 'user',
-    });
-
-    res.redirect('/auth/login');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Грешка при регистрация.');
-  }
-});
-
-// 🔐 POST вход
-router.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/auth/login',
-  })
-);
-
-// 🚪 Изход от системата
+// 🔓 Logout
 router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
@@ -56,19 +28,23 @@ router.get('/logout', (req, res, next) => {
   });
 });
 
-// 🌐 Google OAuth вход
+// 🌐 Google OAuth — начална заявка
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// ✅ Обработка на Google callback
-router.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/auth/login',
-    successRedirect: '/dashboard',
-  })
-);
+// 🌐 Google callback + пренасочване според роля
+router.get('/google/callback', passport.authenticate('google', {
+  failureRedirect: '/auth/login',
+  session: true
+}), (req, res) => {
+  const user = req.user;
 
-// 📧 Потвърждение на имейл (линк от email)
+  // 📍 Пренасочване по роля
+  if (user.role === 'admin') return res.redirect('/admin');
+  if (user.role === 'moderator') return res.redirect('/moderator');
+  return res.redirect('/dashboard');
+});
+
+// 📩 Email verification
 router.get('/verify-email', verifyEmail);
 
 export default router;

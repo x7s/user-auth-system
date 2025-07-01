@@ -8,30 +8,44 @@ import { createLog, logLogin, logLogout } from '../utils/logger.js';
 import sendNotification from '../utils/sendNotification.js';
 
 export const registerUser = async (req, res) => {
+  const { name, email, password } = req.body;
+
   try {
-    const { name, email, password } = req.body;
-
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: 'Имейлът вече се използва.' });
+    if (existingUser) {
+      return res.render('register', {
+        title: 'Register',
+        error: 'Този имейл вече съществува.',
+      });
+    }
 
-    const newUser = await User.create({ name, email, password });
+    // 🔐 Създай потребителя с роля "user"
+    const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    await createLog({
-      user: newUser._id,
-      action: 'register',
-      details: `Потребител ${newUser.email} се регистрира.`,
-      ip: req.ip,
+    const newUser = new User({
+      name,
+      email,
+      password,
+      role: 'user',
+      isVerified: false,
+      verificationToken
     });
 
-    await sendVerificationEmail(newUser);
+    await newUser.save();
 
-    res.json({
-      message: 'Регистрацията беше успешна. Моля, потвърдете имейла си.',
+    // ✉️ Изпрати имейл за потвърждение
+    await sendVerificationEmail(email, verificationToken);
+
+    res.render('login', {
+      title: 'Login',
+      success: 'Провери имейла си за потвърждение преди вход.'
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Грешка при регистрация.' });
+  } catch (err) {
+    console.error(err);
+    res.render('register', {
+      title: 'Register',
+      error: 'Възникна грешка при регистрацията.',
+    });
   }
 };
 
@@ -55,7 +69,6 @@ export const loginUser = async (req, res, next) => {
         });
       }
 
-      // 🔐 2FA не се изисква → логни потребителя
       await logLogin(user, req.ip);
       await createLog({
         user: user._id,
@@ -64,7 +77,7 @@ export const loginUser = async (req, res, next) => {
         ip: req.ip,
       });
 
-      // ✅ Пренасочване според роля
+      // 📍 Пренасочване според роля
       const role = user.role;
       if (role === 'admin') return res.redirect('/admin');
       if (role === 'moderator') return res.redirect('/moderator');

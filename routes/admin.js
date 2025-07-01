@@ -6,11 +6,7 @@ import { Parser as Json2csvParser } from 'json2csv';
 
 const router = express.Router()
 
-router.get('/admin', isAuthenticated, isAdmin, (req, res) => {
-  res.send(`<h1>Admin Panel</h1><p>Добре дошъл, ${req.user.name}</p>`);
-});
-
-router.get('/admin', isAuthenticated, isAdmin, (req, res) => {
+router.get('/', isAuthenticated, isAdmin, (req, res) => {
   res.render('admin', {
     title: 'Администраторски панел',
     user: req.user

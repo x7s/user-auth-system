@@ -148,3 +148,22 @@ button {
   width: 20px;
   height: 20px;
 }
+
+.login-cta {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.login-button {
+  padding: 0.8rem 1.5rem;
+  background-color: #00ffcc;
+  color: #000;
+  font-weight: bold;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #00e6b8;
+}

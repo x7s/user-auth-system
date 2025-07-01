@@ -16,13 +16,13 @@ router.get('/dashboard', isAuthenticated, (req, res) => {
 });
 
 // Модераторски панел
-router.get('/moderator', ensureRoles(['admin', 'moderator']), (req, res) => {
-  res.send(`<h2>Панел на Модератор</h2><p>Здравей, ${req.user.name}</p>`)
-})
+// router.get('/moderator', ensureRoles(['admin', 'moderator']), (req, res) => {
+//   res.send(`<h2>Панел на Модератор</h2><p>Здравей, ${req.user.name}</p>`)
+// })
 
 // Администраторски панел
-router.get('/admin', ensureRole('admin'), (req, res) => {
-  res.send(`<h2>Администраторски Панел</h2><p>Здравей, ${req.user.name}</p>`)
-})
+// router.get('/admin', ensureRole('admin'), (req, res) => {
+//   res.send(`<h2>Администраторски Панел</h2><p>Здравей, ${req.user.name}</p>`)
+// })
 
 export default router

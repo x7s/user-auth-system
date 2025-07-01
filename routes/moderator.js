@@ -8,11 +8,7 @@ const router = express.Router()
 router.get('/users', isAuthenticated, authorizeRoles('moderator'), listUsers)
 
 // И модератори, и администратори имат достъп
-router.get('/moderator', isAuthenticated, authorizeRoles('moderator', 'admin'), (req, res) => {
-  res.send(`<h1>Moderator Panel</h1><p>Добре дошъл, ${req.user.name}</p>`);
-});
-
-router.get('/moderator', isAuthenticated, authorizeRoles('moderator', 'admin'), (req, res) => {
+router.get('/', isAuthenticated, authorizeRoles('moderator', 'admin'), (req, res) => {
   res.render('moderator', {
     title: 'Модераторски панел',
     user: req.user

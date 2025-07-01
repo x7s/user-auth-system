@@ -12,4 +12,11 @@ router.get('/moderator', isAuthenticated, authorizeRoles('moderator', 'admin'), 
   res.send(`<h1>Moderator Panel</h1><p>Добре дошъл, ${req.user.name}</p>`);
 });
 
+router.get('/moderator', isAuthenticated, authorizeRoles('moderator', 'admin'), (req, res) => {
+  res.render('moderator', {
+    title: 'Модераторски панел',
+    user: req.user
+  });
+});
+
 export default router

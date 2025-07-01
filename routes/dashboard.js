@@ -4,8 +4,15 @@ import { isAuthenticated, ensureRole, ensureRoles } from '../middlewares/auth.js
 const router = express.Router()
 
 // Общ потребителски dashboard
-router.get('/dashboard', isAuthenticated, (req, res) => {
+/* router.get('/dashboard', isAuthenticated, (req, res) => {
   res.send(`<h1>Потребителски Dashboard</h1><p>Здравей, ${req.user.name}!</p><p>Роля: ${req.user.role}</p>`);
+}); */
+
+router.get('/dashboard', isAuthenticated, (req, res) => {
+  res.render('dashboard', {
+    title: 'Табло',
+    user: req.user
+  });
 });
 
 // Модераторски панел

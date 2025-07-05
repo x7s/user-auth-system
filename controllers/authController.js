@@ -13,13 +13,18 @@ export const registerUser = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      await createLog({
+        action: 'register_attempt_failed',
+        ip: req.ip,
+        details: `Опит за регистрация с вече съществуващ имейл: ${email}`,
+      });
+
       return res.render('register', {
         title: 'Register',
         error: 'Този имейл вече съществува.',
       });
     }
 
-    // 🔐 Създай потребителя с роля "user"
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
     const newUser = new User({
@@ -28,20 +33,32 @@ export const registerUser = async (req, res) => {
       password,
       role: 'user',
       isVerified: false,
-      verificationToken
+      verificationToken,
     });
 
     await newUser.save();
-
-    // ✉️ Изпрати имейл за потвърждение
     await sendVerificationEmail(email, verificationToken);
+
+    await createLog({
+      user: newUser._id,
+      action: 'register',
+      ip: req.ip,
+      details: `Потребител ${newUser.email} се регистрира.`,
+    });
 
     res.render('login', {
       title: 'Login',
-      success: 'Провери имейла си за потвърждение преди вход.'
+      success: 'Провери имейла си за потвърждение преди вход.',
     });
   } catch (err) {
     console.error(err);
+
+    await createLog({
+      action: 'register_error',
+      ip: req.ip,
+      details: `Грешка при регистрация: ${err.message}`,
+    });
+
     res.render('register', {
       title: 'Register',
       error: 'Възникна грешка при регистрацията.',
@@ -52,7 +69,14 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res, next) => {
   passport.authenticate('local', async (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.status(400).json({ message: info.message });
+    if (!user) {
+      await createLog({
+        action: 'login_failed',
+        ip: req.ip,
+        details: `Неуспешен вход за ${req.body?.email}`,
+      });
+      return res.status(400).json({ message: info.message });
+    }
 
     const twoFA = await TwoFactorAuth.findOne({ user: user._id });
 
@@ -77,7 +101,6 @@ export const loginUser = async (req, res, next) => {
         ip: req.ip,
       });
 
-      // 📍 Пренасочване според роля
       const role = user.role;
       if (role === 'admin') return res.redirect('/admin');
       if (role === 'moderator') return res.redirect('/moderator');
@@ -104,9 +127,15 @@ export const verifyEmail = async (req, res) => {
 
     user.emailVerified = true;
     await user.save();
-
     await VerificationToken.deleteOne({ _id: verificationToken._id });
-    await sendNotification(user._id, 'Your email address has been verified.', 'success');
+
+    await sendNotification(user._id, 'Вашият имейл беше потвърден.', 'success');
+    await createLog({
+      user: user._id,
+      action: 'email_verified',
+      ip: req.ip,
+      details: `Потребителят потвърди имейл адреса.`,
+    });
 
     res.send('Email адресът е успешно потвърден. Можете да влезете в системата.');
   } catch (error) {
@@ -117,6 +146,13 @@ export const verifyEmail = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   await logLogout(req.user, req.ip);
+  await createLog({
+    user: req.user._id,
+    action: 'logout',
+    ip: req.ip,
+    details: `Потребител ${req.user.email} излезе от системата.`,
+  });
+
   req.logout(() => {
     req.session.destroy();
     res.json({ message: 'Успешен изход.' });

@@ -1,0 +1,28 @@
+<main class="admin-users">
+  <h1>👥 Списък с потребители</h1>
+
+  <% if (users.length === 0) { %>
+    <p>Няма намерени потребители.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Име</th>
+          <th>Имейл</th>
+          <th>Роля</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.role %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <button class="btn" onclick="window.history.back()" aria-label="Назад към предходната страница">⬅ Назад</button>
+</main>

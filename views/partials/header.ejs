@@ -1,0 +1,19 @@
+<header class="main-header">
+  <div class="logo">
+    <a href="/">UNLUCID.AI</a>
+  </div>
+
+  <nav class="nav-links">
+    <% if (user) { %>
+      <a href="/dashboard">Dashboard</a>
+      <% if (user.role === 'admin') { %>
+        <a href="/admin">Admin</a>
+      <% } else if (user.role === 'moderator') { %>
+        <a href="/moderator">Moderator</a>
+      <% } %>
+      <a href="/auth/logout" class="btn logout">Logout</a>
+    <% } else { %>
+      <a href="/auth/login" class="btn login">Login</a>
+    <% } %>
+  </nav>
+</header>

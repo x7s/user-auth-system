@@ -1,9 +1,14 @@
-<main class="admin">
-  <h1>Администраторски панел</h1>
-  <p>Здравей, <%= user.name %>!</p>
-  <ul>
-    <li><a href="/moderator">👥 Модераторски панел</a></li>
-    <li><a href="/admin/logs-export">📤 Експорт на логове</a></li>
-    <li><a href="/account/settings">⚙️ Настройки</a></li>
-  </ul>
+<main class="dashboard-page">
+  <h1>👑 Администраторски панел</h1>
+  <p class="role-info">Здравей, <%= user.name %></p>
+
+  <section class="dashboard-links">
+    <a href="/admin/users" class="btn">👥 Списък с потребители</a>
+    <a href="/moderator" class="btn">🛡️ Модераторски панел</a>
+    <a href="/activity-logs/view" class="btn">📜 Дневници на действия</a>
+    <a href="/logs/export/json" class="btn">📄 Експорт на логове (JSON)</a>
+    <a href="/logs/export/csv" class="btn">📄 Експорт на логове (CSV)</a>
+    <a href="/account/settings" class="btn">⚙️ Настройки на профила</a>
+    <a href="/auth/logout" class="btn danger">🚪 Изход</a>
+  </section>
 </main>

@@ -1,0 +1,34 @@
+<main class="activity-logs">
+  <h1>📜 Дневници на действия</h1>
+
+  <% if (logs.length === 0) { %>
+    <div class="no-logs">Няма намерени записи.</div>
+  <% } else { %>
+    <div class="table-wrapper">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th>Потребител</th>
+            <th>Действие</th>
+            <th>Детайли</th>
+            <th>Дата</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% logs.forEach(log => { %>
+            <tr>
+              <td><%= log.user?.name || log.userId || 'Анонимен' %></td>
+              <td><%= log.action %></td>
+              <td><%= log.details %></td>
+              <td><%= new Date(log.createdAt).toLocaleString('bg-BG') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+
+  <div class="back-button">
+    <button class="btn" onclick="window.history.back()" aria-label="Назад към предходната страница">⬅ Назад</button>
+  </div>
+</main>

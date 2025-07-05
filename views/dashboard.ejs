@@ -1,5 +1,9 @@
-<main class="dashboard">
-  <h1>Добре дошъл, <%= user.name %>!</h1>
-  <p>Ти си логнат като <strong><%= user.role %></strong>.</p>
-  <a href="/account" class="btn">Моят профил</a>
+<main class="dashboard-page">
+  <h1>👤 Добре дошъл, <%= user.name %>!</h1>
+  <p class="role-info">Роля: <span><%= user.role %></span></p>
+
+  <section class="dashboard-links">
+    <a href="/account/settings" class="btn">⚙️ Настройки на профила</a>
+    <a href="/auth/logout" class="btn danger">🚪 Изход</a>
+  </section>
 </main>

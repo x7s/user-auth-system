@@ -1,5 +1,6 @@
 import express from 'express'
 import { isAuthenticated, ensureRole, ensureRoles } from '../middlewares/auth.js'
+import { logRouteAccess } from '../middlewares/loggerMiddleware.js';
 
 const router = express.Router()
 
@@ -8,7 +9,7 @@ const router = express.Router()
   res.send(`<h1>Потребителски Dashboard</h1><p>Здравей, ${req.user.name}!</p><p>Роля: ${req.user.role}</p>`);
 }); */
 
-router.get('/dashboard', isAuthenticated, (req, res) => {
+router.get('/dashboard', isAuthenticated, logRouteAccess('Табло'), (req, res) => {
   res.render('dashboard', {
     title: 'Табло',
     user: req.user

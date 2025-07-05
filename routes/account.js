@@ -1,5 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/auth.js';
+import { logRouteAccess } from '../middlewares/loggerMiddleware.js';
 import {
   getAccountSettings,
   updateAccountInfo,
@@ -9,6 +10,7 @@ import {
   sendEmailVerification,
   deleteAccount,
 } from '../controllers/accountController.js';
+import User from '../models/User.js';
 
 const router = express.Router();
 
@@ -23,6 +25,13 @@ router.post('/change-password', isAuthenticated, changePassword);
 
 // 👤 Пълно обновяване на профил – име, потребителско име, email
 router.post('/update-profile', isAuthenticated, updateProfile);
+router.get('/settings', isAuthenticated, logRouteAccess('Настройки на профила'), async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password');
+  res.render('account', {
+    title: 'Настройки на профила',
+    user
+  });
+});
 
 // 📧 Смяна на имейл
 router.post('/change-email', isAuthenticated, changeEmail);

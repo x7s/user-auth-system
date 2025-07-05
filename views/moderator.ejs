@@ -1,8 +1,11 @@
-<main class="moderator">
-  <h1>Модераторски панел</h1>
-  <p>Добре дошъл, <%= user.name %>!</p>
-  <ul>
-    <li><a href="/user/list">📄 Списък с потребители</a></li>
-    <li><a href="/activity-logs">🕒 Дневници на действия</a></li>
-  </ul>
+<main class="dashboard-page">
+  <h1>🛡️ Модераторски панел</h1>
+  <p class="role-info">Здравей, <%= user.name %></p>
+
+  <section class="dashboard-links">
+    <a href="/moderator/users" class="btn">👥 Списък с потребители</a>
+    <a href="/activity-logs/view" class="btn">📜 Дневници на действия</a>
+    <a href="/account/settings" class="btn">⚙️ Настройки на профила</a>
+    <a href="/auth/logout" class="btn danger">🚪 Изход</a>
+  </section>
 </main>

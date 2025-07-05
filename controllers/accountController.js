@@ -1,25 +1,34 @@
-// 🧩 Импорти на всички нужни модули
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import VerificationToken from '../models/VerificationToken.js';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail.js';
-import { logProfileUpdate, logAccountDeletion } from '../utils/logger.js';
+import {
+  logProfileUpdate,
+  logAccountDeletion,
+  createLog
+} from '../utils/logger.js';
 import sendNotification from '../utils/sendNotification.js';
 import { createNotification } from '../utils/notifications.js';
 
-// 👤 Преглед на текущия профил (GET /account/settings)
 export const getAccountSettings = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
     if (!user) return res.status(404).json({ error: 'Потребителят не е намерен' });
+
+    await createLog({
+      user: req.user._id,
+      action: 'view_account_settings',
+      ip: req.ip,
+      details: `Достъп до настройките на профила.`,
+    });
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: 'Грешка при зареждане на профил' });
   }
 };
 
-// ✏️ Обновяване на име и email (вътрешна логика, различна от updateProfile)
 export const updateAccountInfo = async (req, res) => {
   try {
     const { name, email } = req.body;
@@ -38,13 +47,20 @@ export const updateAccountInfo = async (req, res) => {
     if (name) user.name = name;
 
     await user.save();
+
+    await createLog({
+      user: user._id,
+      action: 'account_update',
+      ip: req.ip,
+      details: `Актуализиран профил: ${email ? 'email,' : ''} ${name ? 'name' : ''}`,
+    });
+
     res.json({ message: 'Информацията е актуализирана успешно' });
   } catch (error) {
     res.status(500).json({ error: 'Грешка при актуализацията' });
   }
 };
 
-// 🔒 Смяна на парола
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -66,6 +82,12 @@ export const changePassword = async (req, res) => {
 
     await sendNotification(user._id, 'Паролата ви беше променена.', 'success');
     await createNotification(user._id, 'Паролата беше успешно променена.');
+    await createLog({
+      user: user._id,
+      action: 'password_changed',
+      ip: req.ip,
+      details: `Потребителят смени паролата си.`,
+    });
 
     res.json({ message: 'Паролата е успешно променена' });
   } catch (error) {
@@ -73,22 +95,22 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// 👤 Пълно обновяване на профил (име, потребителско име, email)
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user._id;
     const { name, username, email } = req.body;
-
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: 'Потребителят не е намерен' });
+
+    let changes = '';
 
     if (username && username !== user.username) {
       const existingUser = await User.findOne({ username, _id: { $ne: userId } });
       if (existingUser) return res.status(400).json({ error: 'Потребителското име е заето' });
+      changes += `Username: ${user.username} → ${username}; `;
       user.username = username;
     }
 
-    let changes = '';
     if (name && name !== user.name) {
       changes += `Име: ${user.name} → ${name}; `;
       user.name = name;
@@ -111,7 +133,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// 📧 Смяна на имейл
 export const changeEmail = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -128,6 +149,12 @@ export const changeEmail = async (req, res) => {
     await user.save();
 
     await sendVerificationEmail(user);
+    await createLog({
+      user: user._id,
+      action: 'email_changed',
+      ip: req.ip,
+      details: `Промяна на имейл на: ${newEmail}`,
+    });
 
     res.json({ message: 'Имейлът е променен. Моля, потвърдете новия имейл.' });
   } catch (error) {
@@ -136,12 +163,17 @@ export const changeEmail = async (req, res) => {
   }
 };
 
-// 📨 Изпращане на нов email за верификация
 export const sendEmailVerification = async (req, res) => {
   try {
     const user = req.user;
-
     await sendVerificationEmail(user);
+
+    await createLog({
+      user: user._id,
+      action: 'verification_email_sent',
+      ip: req.ip,
+      details: `Изпратен е нов верификационен имейл.`,
+    });
 
     res.json({ message: 'Имейлът за потвърждение беше изпратен успешно.' });
   } catch (error) {
@@ -150,7 +182,6 @@ export const sendEmailVerification = async (req, res) => {
   }
 };
 
-// ❌ Изтриване на акаунт
 export const deleteAccount = async (req, res) => {
   try {
     const user = req.user;
@@ -158,6 +189,13 @@ export const deleteAccount = async (req, res) => {
     await User.findByIdAndDelete(user._id);
     await logAccountDeletion(user, req.ip);
     await sendNotification(user._id, 'Вашият акаунт беше изтрит.', 'danger');
+
+    await createLog({
+      user: user._id,
+      action: 'account_deleted',
+      ip: req.ip,
+      details: `Акаунтът беше изтрит от потребителя.`,
+    });
 
     req.logout(() => {
       req.session.destroy();

@@ -1,0 +1,28 @@
+<main class="account-settings">
+  <h1>Настройки на профила</h1>
+
+  <form action="/account/update" method="POST">
+    <div class="form-group">
+      <label for="name">Име</label>
+      <input type="text" name="name" id="name" value="<%= user.name %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Имейл</label>
+      <input type="email" name="email" id="email" value="<%= user.email %>" required>
+    </div>
+
+    <button type="submit" class="btn">Запази промените</button>
+  </form>
+
+  <p class="verify-status">
+    Статус на имейл: 
+    <% if (user.emailVerified) { %>
+      ✅ Потвърден
+    <% } else { %>
+      ❌ Непотвърден — <a href="/account/send-verification">Изпрати отново</a>
+    <% } %>
+  </p>
+
+  <button class="btn" onclick="window.history.back()" aria-label="Назад към предходната страница">⬅ Назад</button>
+</main>

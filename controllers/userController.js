@@ -3,7 +3,11 @@ import User from '../models/User.js'
 export async function listUsers(req, res) {
   try {
     const users = await User.find().lean()
-    res.render('admin/users', { users })
+    res.render('admin/users', {
+      title: 'Списък с потребители',
+      users,
+      user: req.user
+  });
   } catch (err) {
     console.error(err)
     res.status(500).send('Грешка при зареждане на потребители.')

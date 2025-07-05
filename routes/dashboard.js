@@ -5,25 +5,11 @@ import { logRouteAccess } from '../middlewares/loggerMiddleware.js';
 const router = express.Router()
 
 // Общ потребителски dashboard
-/* router.get('/dashboard', isAuthenticated, (req, res) => {
-  res.send(`<h1>Потребителски Dashboard</h1><p>Здравей, ${req.user.name}!</p><p>Роля: ${req.user.role}</p>`);
-}); */
-
-router.get('/dashboard', isAuthenticated, logRouteAccess('Табло'), (req, res) => {
+router.get('/dashboard', isAuthenticated, logRouteAccess('Достъп до потребителското табло'), (req, res) => {
   res.render('dashboard', {
     title: 'Табло',
     user: req.user
   });
 });
-
-// Модераторски панел
-// router.get('/moderator', ensureRoles(['admin', 'moderator']), (req, res) => {
-//   res.send(`<h2>Панел на Модератор</h2><p>Здравей, ${req.user.name}</p>`)
-// })
-
-// Администраторски панел
-// router.get('/admin', ensureRole('admin'), (req, res) => {
-//   res.send(`<h2>Администраторски Панел</h2><p>Здравей, ${req.user.name}</p>`)
-// })
 
 export default router

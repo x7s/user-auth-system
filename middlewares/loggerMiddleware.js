@@ -7,7 +7,7 @@ export function logRouteAccess(action) {
         await createLog({
           user: req.user._id,
           action,
-          details: `Потребител ${req.user.email} достъпи ${req.originalUrl}`,
+          details: `Потребител ${req.user.name} достъпи ${req.originalUrl}`,
           ip: req.ip,
         })
       }

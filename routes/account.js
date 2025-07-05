@@ -14,17 +14,19 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
-// 🧾 Взимане на текущите настройки на акаунта
-router.get('/', isAuthenticated, getAccountSettings);
+// 🔄 API: Връща данни за настройки (JSON)
+router.get('/', isAuthenticated, logRouteAccess('API: Настройки на профила'), getAccountSettings);
 
 // ✏️ Обновяване на име и имейл (основна форма)
-router.post('/update', isAuthenticated, updateAccountInfo);
+router.post('/update', isAuthenticated, logRouteAccess('Обновяване на име/имейл'), updateAccountInfo);
 
 // 🔒 Смяна на парола
-router.post('/change-password', isAuthenticated, changePassword);
+router.post('/change-password', isAuthenticated, logRouteAccess('Смяна на парола'), changePassword);
 
 // 👤 Пълно обновяване на профил – име, потребителско име, email
-router.post('/update-profile', isAuthenticated, updateProfile);
+router.post('/update-profile', isAuthenticated, logRouteAccess('Пълно обновяване на профил'), updateProfile);
+
+// 👁️ Визуален изглед на настройки (EJS)
 router.get('/settings', isAuthenticated, logRouteAccess('Настройки на профила'), async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.render('account', {
@@ -34,37 +36,12 @@ router.get('/settings', isAuthenticated, logRouteAccess('Настройки на
 });
 
 // 📧 Смяна на имейл
-router.post('/change-email', isAuthenticated, changeEmail);
+router.post('/change-email', isAuthenticated, logRouteAccess('Смяна на имейл'), changeEmail);
 
 // 📨 Изпращане на нов потвърдителен email
-router.post('/send-verification', isAuthenticated, sendEmailVerification);
+router.post('/send-verification', isAuthenticated, logRouteAccess('Изпратен потвърдителен имейл'), sendEmailVerification);
 
 // ❌ Изтриване на акаунт
-router.delete('/delete', isAuthenticated, deleteAccount);
+router.delete('/delete', isAuthenticated, logRouteAccess('Изтриване на акаунт'), deleteAccount);
 
 export default router;
-/* * account.js
- * оригинален код на Рутера за управление на акаунт настройки и действия
- */
-/*
-import express from 'express'
-import { isAuthenticated } from '../middlewares/auth.js'
-import {
-  getAccountSettings,
-  updateAccountInfo,
-  changePassword,
-} from '../controllers/accountController.js'
-
-const router = express.Router()
-
-// Получаване на акаунт настройки (данни)
-router.get('/', isAuthenticated, getAccountSettings)
-
-// Актуализация на име и email
-router.post('/update', isAuthenticated, updateAccountInfo)
-
-// Смяна на парола
-router.post('/change-password', isAuthenticated, changePassword)
-
-export default router
-*/

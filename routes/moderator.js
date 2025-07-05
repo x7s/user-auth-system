@@ -6,10 +6,10 @@ import { listUsers } from '../controllers/userController.js'
 const router = express.Router()
 
 // Модераторски панел – преглед само за модератори и администратори
-router.get('/users', isAuthenticated, authorizeRoles('admin', 'moderator'), listUsers)
+router.get('/users', isAuthenticated, authorizeRoles('admin', 'moderator'), logRouteAccess('Модераторски достъп до списък с потребители'), listUsers)
 
 // И модератори, и администратори имат достъп
-router.get('/', isAuthenticated, authorizeRoles('moderator', 'admin'), logRouteAccess('Модераторски панел'), (req, res) => {
+router.get('/', isAuthenticated, authorizeRoles('moderator', 'admin'), logRouteAccess('Достъп до Модераторски панел'), (req, res) => {
   res.render('moderator', {
     title: 'Модераторски панел',
     user: req.user

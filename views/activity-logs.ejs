@@ -8,7 +8,7 @@
       <table class="logs-table">
         <thead>
           <tr>
-            <th>Потребител</th>
+            <!-- <th>Потребител</th> -->
             <th>Действие</th>
             <th>Детайли</th>
             <th>Дата</th>
@@ -17,7 +17,7 @@
         <tbody>
           <% logs.forEach(log => { %>
             <tr>
-              <td><%= log.user?.name || log.userId || 'Анонимен' %></td>
+              <!-- <td><%= log.user?.name || log.userId || 'Анонимен' %></td> -->
               <td><%= log.action %></td>
               <td><%= log.details %></td>
               <td><%= new Date(log.createdAt).toLocaleString('bg-BG') %></td>

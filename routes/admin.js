@@ -7,7 +7,7 @@ import { Parser as Json2csvParser } from 'json2csv';
 
 const router = express.Router()
 
-router.get('/', isAuthenticated, isAdmin, logRouteAccess('Админ панел'), (req, res) => {
+router.get('/', isAuthenticated, isAdmin, logRouteAccess('Достъп до Админ панел'), (req, res) => {
   res.render('admin', {
     title: 'Администраторски панел',
     user: req.user
@@ -15,10 +15,10 @@ router.get('/', isAuthenticated, isAdmin, logRouteAccess('Админ панел'
 });
 
 // 🔐 Само за админ и модератор
-router.get('/users', isAuthenticated, ensureRoles(['admin', 'moderator']), listUsers);
+router.get('/users', isAuthenticated, ensureRoles(['admin', 'moderator']), logRouteAccess('Преглед на потребителски списък'), listUsers);
 
 // Промяна на роля на потребител (формата ще подава userId и нова роля)
-router.post('/users/update-role', isAuthenticated, isAdmin, updateRole)
+router.post('/users/update-role', isAuthenticated, isAdmin, logRouteAccess('Промяна на роля на потребител'), updateRole)
 
 // Само администратори и модератори могат да виждат логовете
 router.get('/logs', isAuthenticated, authorizeRoles('admin', 'moderator'), logRouteAccess('Неоторизиран достъп до логове'), async (req, res) => {
@@ -35,7 +35,7 @@ router.use(isAuthenticated);
 router.use(ensureRoles('Admin'));
 
 // GET /admin/logs/export?format=json|csv
-router.get('/logs/export', async (req, res) => {
+router.get('/logs/export', logRouteAccess('Експорт на логове'), async (req, res) => {
   try {
     const format = req.query.format === 'csv' ? 'csv' : 'json';
     const logs = await Log.find().sort({ timestamp: -1 });
@@ -48,7 +48,7 @@ router.get('/logs/export', async (req, res) => {
       const fields = ['userId', 'action', 'timestamp', 'details'];
       const json2csvParser = new Json2csvParser({ fields });
       const csv = json2csvParser.parse(logs.map(log => ({
-        userId: log.userId.toString(),
+        userId: log.user.toString(),
         action: log.action,
         timestamp: log.timestamp.toISOString(),
         details: log.details || ''

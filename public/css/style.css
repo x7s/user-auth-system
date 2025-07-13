@@ -56,7 +56,7 @@ body {
   text-align: center;
 }
 
-.login-page {
+.login-page .register-page{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -375,4 +375,111 @@ button {
 
 .back-button .btn:hover {
   background-color: #0b5ed7;
+}
+
+.alert {
+  padding: 12px 18px;
+  margin: 15px 0;
+  border-radius: 5px;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease-in;
+}
+
+.alert-success {
+  background-color: #d1f4d1;
+  color: #2b6c2b;
+  border: 1px solid #5cb85c;
+}
+
+.alert-error {
+  background-color: #fdd;
+  color: #a00;
+  border: 1px solid #d9534f;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Общи цветови акценти */
+.highlight-white { color: #fff; }
+.highlight-green { color: #00ff88; }
+.highlight-purple { color: #9f44ff; }
+.highlight-brand {
+  background: linear-gradient(to right, #00ff88, #9f44ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-container {
+  padding: 2rem;
+  margin-left: 220px; /* ако имаш sidebar */
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+.hero-subtitle {
+  color: #aaa;
+  margin-top: 0.5rem;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.feature-card {
+  background: #121212;
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 250px;
+  box-shadow: 0 0 10px rgba(0,255,136,0.2);
+}
+
+.info-section {
+  margin-top: 5rem;
+  text-align: center;
+}
+.info-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.info-card {
+  background: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 250px;
+}
+
+.gallery-section {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.site-footer {
+  margin-top: 5rem;
+  padding: 2rem;
+  text-align: center;
+  background-color: #0d0d0d;
+  border-top: 1px solid #222;
+}
+.footer-links a {
+  margin: 0 10px;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+.footer-brand {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 1rem;
 }

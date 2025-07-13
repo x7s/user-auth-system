@@ -1,0 +1,22 @@
+<main class="ai-generator">
+  <h1><%= title %></h1>
+
+  <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
+
+  <form action="/ai/generate" method="POST">
+    <div class="form-group">
+      <label for="prompt">Въведи описание (напр. "замък при залез слънце"):</label>
+      <input type="text" name="prompt" id="prompt" required>
+    </div>
+    <button class="btn" type="submit">🔮 Генерирай изображение</button>
+  </form>
+
+  <% if (imageUrl) { %>
+    <div class="result">
+      <h2>Резултат:</h2>
+      <img src="<%= imageUrl %>" alt="Генерирано изображение от AI">
+    </div>
+  <% } %>
+</main>

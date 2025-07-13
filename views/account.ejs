@@ -1,5 +1,12 @@
 <main class="account-settings">
   <h1>Настройки на профила</h1>
+  <% if (success && success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  
+  <% if (error && error.length > 0) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
 
   <form action="/account/update" method="POST">
     <div class="form-group">
@@ -25,4 +32,10 @@
   </p>
 
   <button class="btn" onclick="window.history.back()" aria-label="Назад към предходната страница">⬅ Назад</button>
+  <script>
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(el => el.style.display = 'none');
+  }, 5000); // Скрива след 5 секунди
+  </script>
 </main>

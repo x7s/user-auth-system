@@ -11,6 +11,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
   password: {
     type: String,
   },
@@ -25,14 +32,14 @@ const userSchema = new mongoose.Schema({
   emailVerified: {
     type: Boolean,
     default: false,
-},
-twoFactorEnabled: {
+  },
+  twoFactorEnabled: {
     type: Boolean,
     default: false
-},
+  },
   twoFactorSecret: {
     type: String
-},
+  },
   createdAt: {
     type: Date,
     default: Date.now,

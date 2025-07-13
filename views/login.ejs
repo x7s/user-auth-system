@@ -1,25 +1,26 @@
 <main class="login-page">
   <div class="form-container">
-    <h2>Login</h2>
+    <h2>Вход</h2>
     <form method="POST" action="/auth/login">
       <div class="form-group">
-        <label>Email:</label>
+        <label>Имейл:</label>
         <input type="email" name="email" required />
       </div>
       <div class="form-group">
-        <label>Password:</label>
+        <label>Парола:</label>
         <input type="password" name="password" required />
       </div>
-      <button type="submit">Sign In</button>
+      <button type="submit">Вход</button>
+      <p>Нямаш акаунт? Направи си <a href="/auth/register">Регистрация</a></p>
     </form>
 
     <!-- Divider -->
-    <div class="divider"><span>OR</span></div>
+    <div class="divider"><span>ИЛИ</span></div>
 
     <!-- Google Login -->
     <a href="/auth/google" class="google-login-button">
       <img src="/images/google-icon.svg" alt="Google" />
-      Login with Google
+      Вход с Google
     </a>
 
     <% if (typeof error !== 'undefined') { %>

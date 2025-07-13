@@ -1,0 +1,14 @@
+<main class="ai-results">
+  <h1><%= title %></h1>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } else if (resultUrl) { %>
+    <img src="<%= resultUrl %>" alt="Резултат от AI генерация" />
+    <a href="<%= resultUrl %>" download class="btn">⬇️ Изтегли</a>
+  <% } else { %>
+    <p>Няма резултат.</p>
+  <% } %>
+
+  <a href="/ai/generate" class="btn">⬅ Назад</a>
+</main>

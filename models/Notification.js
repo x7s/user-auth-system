@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
-    userId: { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: false
-    }, // може да е null за глобални нотификации
-    user: {
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false
+  }, // може да е null за глобални нотификации
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,

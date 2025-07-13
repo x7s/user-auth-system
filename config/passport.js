@@ -41,19 +41,29 @@ passport.use(new GoogleStrategy({
       return done(null, existingUser);
     }
 
+    // 👉 Генерирай уникално потребителско име
+    let baseUsername = profile.displayName?.replace(/\s+/g, '').toLowerCase() || profile.emails[0].value.split('@')[0];
+    let username = baseUsername;
+    let counter = 1;
+
+    while (await User.findOne({ username })) {
+      username = `${baseUsername}${counter++}`;
+    }
+
     const newUser = await User.create({
       googleId: profile.id,
       name: profile.displayName,
       email: profile.emails[0].value,
+      username, // 💡 Това беше причината за Mongo грешката
       role: 'user',
-    })
+    });
 
     await logLogin(newUser, req.ip); // 🔥
     return done(null, newUser)
   } catch (err) {
     return done(err)
   }
-}))
+}));
 
 // Сериалиране / десериалиране
 passport.serializeUser((user, done) => {

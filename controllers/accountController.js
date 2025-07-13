@@ -38,7 +38,8 @@ export const updateAccountInfo = async (req, res) => {
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email });
       if (emailExists) {
-        return res.status(400).json({ error: 'Email вече се използва' });
+        req.flash('error', 'Този Email вече се използва.');
+        return res.redirect('/account/settings');
       }
       user.email = email;
       user.emailVerified = false;
@@ -52,10 +53,11 @@ export const updateAccountInfo = async (req, res) => {
       user: user._id,
       action: 'account_update',
       ip: req.ip,
-      details: `Актуализиран профил: ${email ? 'email,' : ''} ${name ? 'name' : ''}`,
+      details: `${req.username} Актуализира ${email ? 'email,' : ''} ${name ? 'name' : ''} в профила си.`,
     });
 
-    res.json({ message: 'Информацията е актуализирана успешно' });
+    req.flash('success', 'Информацията е актуализирана успешно.');
+    res.redirect('/account/settings');
   } catch (error) {
     res.status(500).json({ error: 'Грешка при актуализацията' });
   }

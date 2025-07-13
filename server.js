@@ -3,6 +3,7 @@ import expressLayouts from 'express-ejs-layouts'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import session from 'express-session'
+import flash from 'connect-flash';
 import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import path from 'path'
@@ -23,6 +24,7 @@ import notificationsRouter from './routes/notifications.js';
 import activityRoutes from './routes/activity.js';
 import activityLogRoutes from './routes/activityLogs.js';
 import logsExportRoutes from './routes/logsExport.js';
+import aiRoutes from './routes/ai.js';
 import { startLogCleanupJob } from './utils/cronJobs.js';
 import cleanupInactiveAccounts from './cron/cleanupInactiveAccounts.js';
 import connectDB from './config/db.js';
@@ -39,7 +41,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(setUserLocals)
-// app.use(ensureGuest)
 // ✅ Layout middleware
 app.use(expressLayouts);
 app.set('layout', 'layout');
@@ -69,23 +70,30 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
 }))
-
+app.use(flash());
+// Middleware за достъп до flash в EJS
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success')
+  res.locals.error = req.flash('error')
+  next();
+});
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())
 
 // Routes
 app.use('/auth', authRoutes)
-app.use('/', dashboardRoutes)
 app.use('/admin', adminRoutes)
-app.use('/admin', logsExportRoutes);
+app.use('/admin', logsExportRoutes)
 app.use('/moderator', moderatorRoutes)
 app.use('/user', userRoutes)
 app.use('/account', accountRoutes)
 app.use('/api/logs', logsRoutes)
 app.use('/notifications', notificationsRouter)
-app.use('/activity', activityRoutes);
-app.use('/activity-logs', activityLogRoutes);
+app.use('/activity', activityRoutes)
+app.use('/activity-logs', activityLogRoutes)
+app.use('/ai', aiRoutes)
+app.use('/', dashboardRoutes)
 
 // Рендирай началната страница (примерен frontend layout)
 app.get('/', logRouteAccess('Начална страница'), (req, res) => {

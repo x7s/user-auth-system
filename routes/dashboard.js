@@ -11,7 +11,6 @@ router.get('/', logRouteAccess('Начална страница'), (req, res) =>
     user: req.user || null
   });
 });
-
 // Общ потребителски dashboard
 router.get('/dashboard', isAuthenticated, logRouteAccess('Достъп до потребителското табло'), (req, res) => {
   res.render('dashboard', {

@@ -1,8 +1,23 @@
-<header class="header">
+<!--<header class="header">
   <% if (user) { %>
     <div class="welcome">Здравей, <%= user.name %>!</div>
-    <a href="/logout" class="btn btn-logout">Изход</a>
+    <a href="/auth/logout" class="btn btn-logout">Изход</a>
   <% } else { %>
-    <a href="/login" class="btn btn-login">Вход</a>
+    <a href="/auth/login" class="btn btn-login">Вход</a>
   <% } %>
+</header>-->
+<header class="main-header">
+  <div class="logo">
+    <a href="/">UNLUCID.AI</a>
+  </div>
+
+  <div class="nav-links">
+    <% if (user) { %>
+      <span class="welcome highlight-white">Здравей, <%= user.username %>!</span>
+      <a href="/dashboard" class="btn button">📊 Табло</a>
+      <a href="/auth/logout" class="btn logout">Изход</a>
+    <% } else { %>
+      <a href="/auth/login" class="btn btn-login">Вход</a>
+    <% } %>
+  </div>
 </header>

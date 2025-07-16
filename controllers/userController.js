@@ -35,9 +35,10 @@ export const getProfile = async (req, res) => {
     res.json({
       id: req.user._id,
       name: req.user.name,
+      username: req.user.username,
       email: req.user.email,
       role: req.user.role,
-      provider: req.user.provider,
+      createdAt: req.user.createdAt,
     })
   } catch (err) {
     res.status(500).json({ error: 'Неуспешно зареждане на профил.' })

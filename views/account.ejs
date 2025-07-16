@@ -10,13 +10,28 @@
 
   <form action="/account/update" method="POST">
     <div class="form-group">
-      <label for="name">Име</label>
+      <label for="name">Име:</label>
       <input type="text" name="name" id="name" value="<%= user.name %>" required>
     </div>
 
     <div class="form-group">
-      <label for="email">Имейл</label>
+      <label for="username">Потребителско Име:</label>
+      <input type="text" name="username" id="username" value="<%= user.username %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Имейл:</label>
       <input type="email" name="email" id="email" value="<%= user.email %>" required>
+    </div>
+
+    <!--<div class="form-group">
+      <label for="password">Текуща Парола:</label>
+      <input type="text" name="password" id="password" value="<%= user.password %>">
+    </div>-->
+
+    <div class="form-group">
+      <label for="password">Парола:</label>
+      <input type="password" name="password" id="password" value="<%= user.password %>" required>
     </div>
 
     <button type="submit" class="btn">Запази промените</button>

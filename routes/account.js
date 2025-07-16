@@ -10,12 +10,13 @@ import {
   sendEmailVerification,
   deleteAccount,
 } from '../controllers/accountController.js';
+import { getProfile } from '../controllers/userController.js';
 import User from '../models/User.js';
 
 const router = express.Router();
 
 // 🔄 API: Връща данни за настройки (JSON)
-router.get('/', isAuthenticated, logRouteAccess('API: Настройки на профила'), getAccountSettings);
+router.get('/', isAuthenticated, logRouteAccess('API: Настройки на профила'), getProfile);
 
 // ✏️ Обновяване на име и имейл (основна форма)
 router.post('/update', isAuthenticated, logRouteAccess('Обновяване на име/имейл'), updateAccountInfo);
